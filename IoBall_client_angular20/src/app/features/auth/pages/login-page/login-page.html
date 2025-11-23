@@ -1,0 +1,26 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div>
+        <label for="username">Username:</label>
+        <input
+            type="text"
+            id="username"
+            name="username"
+            required
+            formControlName="username"
+        />
+        @if (
+            usernameControl.invalid &&
+            (usernameControl.dirty || usernameControl.touched)
+        ) {
+            @if (usernameControl.errors?.['required']) {
+                <div class="error">Username is required.</div>
+            }
+        }
+    </div>
+    <button type="submit" [disabled]="loginForm.invalid || this.isLoading">
+        Login
+    </button>
+    @if (errorMessage) {
+        <div class="error">{{ errorMessage }}</div>
+    }
+</form>
