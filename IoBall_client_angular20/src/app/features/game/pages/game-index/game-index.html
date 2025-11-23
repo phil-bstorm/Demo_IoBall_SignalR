@@ -11,6 +11,12 @@
             [(ngModel)]="chatInput"
             placeholder="Type your message"
         />
+        <button (click)="onSendChatMessage()">Send Chat Message</button>
     </div>
+
+    <ul>
+        @for (msg of chatHistory(); track $index) {
+            <li>{{ msg.from }}: {{ msg.message }}</li>
+        }
+    </ul>
 }
-<p>Hello world</p>

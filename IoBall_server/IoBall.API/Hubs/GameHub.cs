@@ -17,7 +17,7 @@ namespace IoBall.API.Hubs
             await base.OnConnectedAsync();
 
             // notify all clients that a new player has connected
-            await Clients.Others.PlayerConnected(id, username);
+            await Clients.Others.PlayerJoined(id, username);
         }
 
         [Authorize]

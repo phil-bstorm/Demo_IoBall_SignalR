@@ -14,9 +14,13 @@ export class GameIndex {
     private readonly _authService = inject(AuthService);
     private readonly _router = inject(Router);
     private readonly _gameService = inject(GameService);
+
     public isConnected = this._gameService.isConnected;
+
     public chatInput: string = '';
-    public chatMessages: string[] = [];
+
+    // signals
+    public chatHistory = this._gameService.chatHistory;
 
     public onLogout(): void {
         this._authService.logout();
@@ -27,7 +31,14 @@ export class GameIndex {
         this._gameService.connect();
     }
 
-    public onReceiveChatMessage(from: string, message: string): void {
-        this.chatMessages.push(`${from}: ${message}`);
+    public onSendChatMessage(): void {
+        if (!this.chatInput.trim()) return;
+
+        this._gameService.connection?.invoke(
+            'SendChatMessage',
+            this.chatInput.trim(),
+        );
+
+        this.chatInput = '';
     }
 }
