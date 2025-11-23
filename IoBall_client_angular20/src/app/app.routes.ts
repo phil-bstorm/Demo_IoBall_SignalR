@@ -8,11 +8,11 @@ export const routes: Routes = [
     {
         component: GameIndex,
         path: '',
-        canActivate: [connectedGuard],
+        // canActivate: [connectedGuard],
     },
     {
         component: LoginPage,
         path: 'auth/login',
-        canActivate: [notConnectedGuard],
+        // canActivate: [notConnectedGuard],
     },
 ];

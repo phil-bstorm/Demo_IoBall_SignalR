@@ -1,3 +1,4 @@
+using IoBall.API.Hubs;
 using IoBall.API.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -76,6 +77,25 @@ builder
 
             ValidateLifetime = true,
         };
+
+        #region Configuration for SignalR
+        option.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                // If the request is for our hub...
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    (path.StartsWithSegments("/gamehub")))
+                {
+                    // Read the token out of the query string
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
+        #endregion
     });
 
 #endregion
@@ -86,14 +106,18 @@ builder.Services.AddCors(service =>
 {
     service.AddPolicy("FFA", policy =>
     {
-        policy.AllowAnyOrigin();
-        policy.AllowAnyMethod();
-        policy.AllowAnyHeader();
+        policy.WithOrigins(["http://localhost:4200", "http://localhost:5239/"])
+                    .AllowAnyHeader()
+                    .AllowCredentials();
     });
 
     // TODO : Add more CORS policies for production
 });
 
+#endregion
+
+#region SignalR
+builder.Services.AddSignalR();
 #endregion
 
 var app = builder.Build();
@@ -113,5 +137,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+#region SignalR 
+app.MapHub<GameHub>("/gamehub");
+#endregion
 
 app.Run();

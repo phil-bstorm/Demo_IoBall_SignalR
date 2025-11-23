@@ -1,1 +1,16 @@
-<p>game-index works!</p>
+@if (!isConnected()) {
+    <button (click)="onLogout()">Logout</button>
+}
+
+@if (!isConnected()) {
+    <button (click)="onConnectToGame()">Connect to game</button>
+} @else {
+    <div>
+        <input
+            type="text"
+            [(ngModel)]="chatInput"
+            placeholder="Type your message"
+        />
+    </div>
+}
+<p>Hello world</p>
